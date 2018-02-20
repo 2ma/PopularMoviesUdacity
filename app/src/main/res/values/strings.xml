@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+    <string name="api_key">YOUR API KEY HERE</string>
+    <string name="poster_description">Movie poster</string>
+    <string name="menu_filter">Filter</string>
+    <string name="menu_popular">Most popular</string>
+    <string name="menu_top_rated">Highest rated</string>
+    <string name="error">There was an error!</string>
+    <string name="retry">Retry</string>
+    <string name="no_connection">There is no internet!</string>
+    <string name="vote_average">%.1f/10</string>
+    <string name="movie_error">Something went wrong.</string>
+</resources>
