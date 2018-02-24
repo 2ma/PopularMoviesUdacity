@@ -40,6 +40,7 @@ ext {
     rxJava = '2.1.9'
     rxAndroid = '2.0.1'
     rxBinding = '2.1.1'
+    leakCanary = '1.5.4'
 
     junitVersion = '4.12'
     mockitoVersion = '2.13.0'

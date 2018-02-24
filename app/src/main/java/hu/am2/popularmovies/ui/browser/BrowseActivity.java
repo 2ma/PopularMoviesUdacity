@@ -17,6 +17,7 @@ import android.view.View;
 
 import com.jakewharton.rxbinding2.support.v7.widget.RxToolbar;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -34,6 +35,7 @@ public class BrowseActivity extends AppCompatActivity implements BrowserAdapter.
 
     public static final int FILTER_POPULAR = 0;
     public static final int FILTER_TOP_RATED = 1;
+    public static final int FILTER_FAVORITES = 2;
     public static final String EXTRA_MOVIE = "hu.am2.popularmovies.extra.MOVIE";
     private final CompositeDisposable disposables = new CompositeDisposable();
     @Inject
@@ -76,21 +78,35 @@ public class BrowseActivity extends AppCompatActivity implements BrowserAdapter.
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 
-        if (filter == FILTER_POPULAR) {
-            changeMenuText(menu, R.id.menu_popular, Color.RED);
-            changeMenuText(menu, R.id.menu_top_rated, Color.BLACK);
-        } else {
-            changeMenuText(menu, R.id.menu_popular, Color.BLACK);
-            changeMenuText(menu, R.id.menu_top_rated, Color.RED);
-        }
+        switch (filter) {
+            case FILTER_POPULAR: {
+                changeMenuText(menu, R.id.menu_filter_popular, Color.RED);
+                changeMenuText(menu, R.id.menu_filter_top_rated, Color.BLACK);
+                changeMenuText(menu, R.id.menu_filter_favorite, Color.BLACK);
+                break;
+            }
+            case FILTER_TOP_RATED: {
+                changeMenuText(menu, R.id.menu_filter_top_rated, Color.RED);
+                changeMenuText(menu, R.id.menu_filter_popular, Color.BLACK);
+                changeMenuText(menu, R.id.menu_filter_favorite, Color.BLACK);
+                break;
+            }
+            case FILTER_FAVORITES: {
+                changeMenuText(menu, R.id.menu_filter_favorite, Color.RED);
+                changeMenuText(menu, R.id.menu_filter_popular, Color.BLACK);
+                changeMenuText(menu, R.id.menu_filter_top_rated, Color.BLACK);
+                break;
+            }
 
+        }
         return true;
     }
 
-    private void handleResult(Result result) {
+    private void handleResult(Result<MovieModel> result) {
         switch (result.state) {
             case Result.STATE_LOADING: {
                 binding.progressBar.setVisibility(View.VISIBLE);
+                binding.emptyView.setVisibility(View.GONE);
                 break;
             }
             case Result.STATE_SUCCESS: {
@@ -132,7 +148,15 @@ public class BrowseActivity extends AppCompatActivity implements BrowserAdapter.
     }
 
     private void displayMovies(List<MovieModel> movies) {
-        adapter.setMovies(movies);
+        if (movies == null || movies.isEmpty()) {
+            binding.emptyView.setVisibility(View.VISIBLE);
+            binding.movieListView.setVisibility(View.GONE);
+            adapter.setMovies(Collections.emptyList());
+        } else {
+            binding.emptyView.setVisibility(View.GONE);
+            binding.movieListView.setVisibility(View.VISIBLE);
+            adapter.setMovies(movies);
+        }
     }
 
     @Override
@@ -142,10 +166,13 @@ public class BrowseActivity extends AppCompatActivity implements BrowserAdapter.
             .filter(menuItem -> menuItem.getItemId() != 0)
             .map(menuItem -> {
                 scrollToTop = true;
-                if (menuItem.getItemId() == R.id.menu_popular) {
-                    return FILTER_POPULAR;
-                } else {
-                    return FILTER_TOP_RATED;
+                switch (menuItem.getItemId()) {
+                    case R.id.menu_filter_popular:
+                        return FILTER_POPULAR;
+                    case R.id.menu_filter_top_rated:
+                        return FILTER_TOP_RATED;
+                    default:
+                        return FILTER_FAVORITES;
                 }
             })
             .subscribe(menuItem -> viewModel.getFilterObserver().onNext(menuItem)));
