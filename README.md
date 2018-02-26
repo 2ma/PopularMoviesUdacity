@@ -1,9 +1,9 @@
 # Popular Movies Udacity
-Popular movies project for Udacity course stage 1
+Popular movies project for Udacity course stage 1 and stage 2
 
 This is a student app for the Udacity Google Developer Nanodegree Scholarship Android developer course.
 
-This app uses www.themoviedb.org as source of it's content, you need get an API key, and insert into strings.xml api_key string.
+This app uses www.themoviedb.org as source of it's content, you need to get an API key, and add to api.properties like this: TMDBApiKey=your_key_here
 
 Copyright (c) 2018 Tamás Müller
 
