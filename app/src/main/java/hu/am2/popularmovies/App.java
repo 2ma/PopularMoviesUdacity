@@ -3,6 +3,8 @@ package hu.am2.popularmovies;
 import android.app.Activity;
 import android.app.Application;
 
+import com.squareup.leakcanary.LeakCanary;
+
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjector;
@@ -24,6 +26,7 @@ public class App extends Application implements HasActivityInjector {
     @Override
     public void onCreate() {
         super.onCreate();
+        LeakCanary.install(this);
         DaggerAppComponent.builder().context(getApplicationContext()).build().inject(this);
     }
 }

@@ -7,6 +7,7 @@ import dagger.Binds;
 import dagger.Module;
 import dagger.multibindings.IntoMap;
 import hu.am2.popularmovies.ui.browser.BrowserViewModel;
+import hu.am2.popularmovies.ui.detail.DetailViewModel;
 import hu.am2.popularmovies.viewmodel.PopularMoviesViewModelFactory;
 
 /*
@@ -33,6 +34,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(BrowserViewModel.class)
     abstract ViewModel bindBrowserViewModel(BrowserViewModel browserViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(DetailViewModel.class)
+    abstract ViewModel bindDetailViewModel(DetailViewModel detailViewModel);
 
     @Binds
     abstract ViewModelProvider.Factory bindViewModelFactory(PopularMoviesViewModelFactory factory);

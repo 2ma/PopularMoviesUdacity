@@ -1,11 +1,11 @@
-package hu.am2.popularmovies.data.repository.remote.module;
+package hu.am2.popularmovies.data.repository.remote.model;
 
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class TMDBResponse {
+public class MovieResponse {
 
     private int page;
     @SerializedName("total_results")
