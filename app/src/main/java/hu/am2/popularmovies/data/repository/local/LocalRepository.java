@@ -14,10 +14,10 @@ import java.util.List;
 import javax.inject.Inject;
 
 import hu.am2.popularmovies.data.repository.local.database.PopularMoviesContract;
-import hu.am2.popularmovies.data.repository.remote.module.MovieModel;
+import hu.am2.popularmovies.data.repository.remote.model.MovieModel;
 
 public class LocalRepository {
-    private ContentResolver contentResolver;
+    private final ContentResolver contentResolver;
 
     @Inject
     public LocalRepository(ContentResolver contentResolver) {
@@ -42,6 +42,8 @@ public class LocalRepository {
                         movie.setUserRating(cursor.getDouble(PopularMoviesContract.Favorites.ROW_USER_RATING));
                         movie.setPosterUrl(cursor.isNull(PopularMoviesContract.Favorites.ROW_POSTER_URL) ? "" : cursor.getString
                             (PopularMoviesContract.Favorites.ROW_POSTER_URL));
+                        movie.setBackDrop(cursor.isNull(PopularMoviesContract.Favorites.ROW_BACKDROP_URL) ? "" : cursor.getString
+                            (PopularMoviesContract.Favorites.ROW_BACKDROP_URL));
                         movies.add(movie);
                     }
                 } else {
@@ -82,6 +84,7 @@ public class LocalRepository {
         contentValues.put(PopularMoviesContract.Favorites.COLUMN_RELEASE_DATE, movie.getReleaseDate());
         contentValues.put(PopularMoviesContract.Favorites.COLUMN_USER_RATING, movie.getUserRating());
         contentValues.put(PopularMoviesContract.Favorites.COLUMN_POSTER_URL, movie.getPosterUrl());
+        contentValues.put(PopularMoviesContract.Favorites.COLUMN_BACKDROP_URL, movie.getBackDrop());
         contentResolver.insert(PopularMoviesContract.Favorites.CONTENT_URI, contentValues);
     }
 

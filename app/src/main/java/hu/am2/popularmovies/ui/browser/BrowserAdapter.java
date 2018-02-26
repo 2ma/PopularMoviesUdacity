@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 import hu.am2.popularmovies.R;
-import hu.am2.popularmovies.data.repository.remote.module.MovieModel;
+import hu.am2.popularmovies.data.repository.remote.model.MovieModel;
 
 public class BrowserAdapter extends RecyclerView.Adapter<BrowserAdapter.MovieViewHolder> {
 
@@ -64,7 +64,6 @@ public class BrowserAdapter extends RecyclerView.Adapter<BrowserAdapter.MovieVie
             itemView.setOnClickListener(this);
         }
 
-        //TODO handle glide loading error
         public void bindMovie(MovieModel movie) {
             Glide.with(poster).load(IMAGE_URL + movie.getPosterUrl()).into(poster);
         }

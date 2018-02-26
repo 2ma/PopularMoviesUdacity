@@ -8,6 +8,11 @@
     <string name="retry">Retry</string>
     <string name="no_connection">There is no internet!</string>
     <string name="vote_average">%.1f/10</string>
+    <plurals name="vote_count">
+        <item quantity="one">%d rating</item>
+        <item quantity="other">%d ratings</item>
+    </plurals>
+    <string name="runtime">%dm</string>
     <string name="movie_error">Something went wrong.</string>
     <string name="no_videos">No videos available.</string>
     <string name="videos_title">Videos:</string>
@@ -17,4 +22,9 @@
     <string name="no_reviews">No reviews.</string>
     <string name="favorite_menu">Favorite</string>
     <string name="no_movies">No movies</string>
+    <string name="movie_background">Image from the movie</string>
+    <string name="youtube_thumbnail">Youtube thumbnail</string>
+    <string name="synopsis_title">Description:</string>
+    <string name="runtime_title">Runtime</string>
+    <string name="play">Play trailer</string>
 </resources>

@@ -25,6 +25,7 @@ public class PopularMoviesContract {
         public static final String COLUMN_USER_RATING = "user_rating";
         public static final String COLUMN_RELEASE_DATE = "release_date";
         public static final String COLUMN_POSTER_URL = "poster_url";
+        public static final String COLUMN_BACKDROP_URL = "backdrop_url";
 
         public static final String CONTENT_DIR_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_FAVORITES;
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_FAVORITES;
@@ -39,7 +40,8 @@ public class PopularMoviesContract {
             COLUMN_SYNOPSIS,
             COLUMN_USER_RATING,
             COLUMN_RELEASE_DATE,
-            COLUMN_POSTER_URL
+            COLUMN_POSTER_URL,
+            COLUMN_BACKDROP_URL
         };
 
         public static final int ROW_MOVIE_ID = 0;
@@ -48,5 +50,6 @@ public class PopularMoviesContract {
         public static final int ROW_USER_RATING = 3;
         public static final int ROW_RELEASE_DATE = 4;
         public static final int ROW_POSTER_URL = 5;
+        public static final int ROW_BACKDROP_URL = 6;
     }
 }

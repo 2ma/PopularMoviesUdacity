@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class PopularMoviesDatabase extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "popular_movies.db";
+    private static final String DATABASE_NAME = "popular_movies.db";
 
     public PopularMoviesDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -22,6 +22,7 @@ public class PopularMoviesDatabase extends SQLiteOpenHelper {
             PopularMoviesContract.Favorites.COLUMN_RELEASE_DATE + " TEXT NOT NULL, " +
             PopularMoviesContract.Favorites.COLUMN_SYNOPSIS + " TEXT NOT NULL, " +
             PopularMoviesContract.Favorites.COLUMN_POSTER_URL + " TEXT, " +
+            PopularMoviesContract.Favorites.COLUMN_BACKDROP_URL + " TEXT, " +
             PopularMoviesContract.Favorites.COLUMN_USER_RATING + " REAL NOT NULL );"
         );
     }

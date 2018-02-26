@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import dagger.android.AndroidInjection;
 import hu.am2.popularmovies.R;
 import hu.am2.popularmovies.Utils;
-import hu.am2.popularmovies.data.repository.remote.module.MovieModel;
+import hu.am2.popularmovies.data.repository.remote.model.MovieModel;
 import hu.am2.popularmovies.databinding.ActivityBrowseBinding;
 import hu.am2.popularmovies.domain.Result;
 import hu.am2.popularmovies.ui.detail.DetailActivity;

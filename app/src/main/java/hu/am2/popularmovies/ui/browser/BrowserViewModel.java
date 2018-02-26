@@ -13,7 +13,7 @@ import javax.inject.Inject;
 import hu.am2.popularmovies.data.repository.local.LocalRepository;
 import hu.am2.popularmovies.data.repository.local.database.PopularMoviesContract;
 import hu.am2.popularmovies.data.repository.remote.RemoteRepository;
-import hu.am2.popularmovies.data.repository.remote.module.MovieResponse;
+import hu.am2.popularmovies.data.repository.remote.model.MovieResponse;
 import hu.am2.popularmovies.domain.Result;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -25,8 +25,6 @@ import io.reactivex.subjects.BehaviorSubject;
 public class BrowserViewModel extends ViewModel {
 
     private static final String PREFERENCE_FILTER = "filter";
-    private final RemoteRepository remoteRepository;
-    private final LocalRepository localRepository;
     private final ContentResolver contentResolver;
     private final BehaviorSubject<Boolean> retry = BehaviorSubject.create();
     private final BehaviorSubject<Integer> filter = BehaviorSubject.create();
@@ -41,8 +39,6 @@ public class BrowserViewModel extends ViewModel {
     @Inject
     public BrowserViewModel(LocalRepository localRepository, RemoteRepository remoteRepository, SharedPreferences sharedPreferences,
                             ContentResolver contentResolver) {
-        this.remoteRepository = remoteRepository;
-        this.localRepository = localRepository;
         this.contentResolver = contentResolver;
         retry.onNext(true);
         filter.onNext(sharedPreferences.getInt(PREFERENCE_FILTER, BrowseActivity.FILTER_POPULAR));
@@ -113,7 +109,7 @@ public class BrowserViewModel extends ViewModel {
         }
     }
 
-    private ContentObserver contentObserver = new ContentObserver(null) {
+    private final ContentObserver contentObserver = new ContentObserver(null) {
         @Override
         public void onChange(boolean selfChange) {
             super.onChange(selfChange);

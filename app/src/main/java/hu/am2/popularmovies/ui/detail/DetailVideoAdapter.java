@@ -5,16 +5,21 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.Collections;
 import java.util.List;
 
 import hu.am2.popularmovies.R;
-import hu.am2.popularmovies.data.repository.remote.module.VideoModel;
+import hu.am2.popularmovies.data.repository.remote.model.VideoModel;
 
 public class DetailVideoAdapter extends RecyclerView.Adapter<DetailVideoAdapter.VideoViewHolder> {
 
+    private static final String YOUTUBE_THUMBNAIL_FRONT = "https://img.youtube.com/vi/";
+    private static final String YOUTUBE_THUMBNAIL_BACK = "/0.jpg";
 
     private final LayoutInflater inflater;
     private final VideoClickListener listener;
@@ -55,15 +60,19 @@ public class DetailVideoAdapter extends RecyclerView.Adapter<DetailVideoAdapter.
     class VideoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private final TextView title;
+        private final ImageView thumbnail;
 
         public VideoViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.videoTitle);
+            thumbnail = itemView.findViewById(R.id.videoThumbnail);
             itemView.setOnClickListener(this);
         }
 
         public void bindMovie(VideoModel video) {
             title.setText(video.getName());
+            Glide.with(thumbnail).load(YOUTUBE_THUMBNAIL_FRONT + video.getKey() + YOUTUBE_THUMBNAIL_BACK)
+                .into(thumbnail);
         }
 
         @Override

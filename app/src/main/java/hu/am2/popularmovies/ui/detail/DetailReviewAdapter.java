@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 import hu.am2.popularmovies.R;
-import hu.am2.popularmovies.data.repository.remote.module.ReviewModel;
+import hu.am2.popularmovies.data.repository.remote.model.ReviewModel;
 
 public class DetailReviewAdapter extends RecyclerView.Adapter<DetailReviewAdapter.ReviewViewHolder> {
 

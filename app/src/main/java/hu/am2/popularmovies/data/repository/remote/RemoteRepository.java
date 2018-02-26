@@ -4,10 +4,11 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import hu.am2.popularmovies.data.repository.remote.api.TMDBService;
-import hu.am2.popularmovies.data.repository.remote.module.DetailResponse;
-import hu.am2.popularmovies.data.repository.remote.module.MovieResponse;
-import hu.am2.popularmovies.data.repository.remote.module.ReviewModel;
-import hu.am2.popularmovies.data.repository.remote.module.VideoModel;
+import hu.am2.popularmovies.data.repository.remote.model.DetailResponse;
+import hu.am2.popularmovies.data.repository.remote.model.MovieDetailModel;
+import hu.am2.popularmovies.data.repository.remote.model.MovieResponse;
+import hu.am2.popularmovies.data.repository.remote.model.ReviewModel;
+import hu.am2.popularmovies.data.repository.remote.model.VideoModel;
 import io.reactivex.Single;
 
 @Singleton
@@ -34,5 +35,9 @@ public class RemoteRepository {
 
     public Single<DetailResponse<ReviewModel>> getReviewsForMovieId(int movieId) {
         return tmdbService.getReviewsForMovieId(movieId);
+    }
+
+    public Single<MovieDetailModel> getDetailForMovieId(int movieId) {
+        return tmdbService.getDetailForMovieId(movieId);
     }
 }

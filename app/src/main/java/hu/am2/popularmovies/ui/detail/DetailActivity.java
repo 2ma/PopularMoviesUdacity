@@ -1,19 +1,25 @@
 package hu.am2.popularmovies.ui.detail;
 
 
+import android.app.Activity;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,36 +37,41 @@ import javax.inject.Inject;
 import dagger.android.AndroidInjection;
 import hu.am2.popularmovies.R;
 import hu.am2.popularmovies.Utils;
-import hu.am2.popularmovies.data.repository.remote.module.MovieModel;
-import hu.am2.popularmovies.data.repository.remote.module.ReviewModel;
-import hu.am2.popularmovies.data.repository.remote.module.VideoModel;
+import hu.am2.popularmovies.data.repository.remote.model.MovieDetailModel;
+import hu.am2.popularmovies.data.repository.remote.model.MovieModel;
+import hu.am2.popularmovies.data.repository.remote.model.ReviewModel;
+import hu.am2.popularmovies.data.repository.remote.model.VideoModel;
 import hu.am2.popularmovies.databinding.DetailLayoutBinding;
 import hu.am2.popularmovies.domain.Result;
 import hu.am2.popularmovies.ui.browser.BrowseActivity;
-import hu.am2.popularmovies.ui.browser.BrowserAdapter;
 
 public class DetailActivity extends AppCompatActivity implements DetailVideoAdapter.VideoClickListener {
 
-    @BindingAdapter({"app:imageUrl", "app:mainView"})
-    public static void loadImageFromUrlWithPalette(ImageView imageView, String imageUrl, View mainView) {
+    private static final String LARGE_IMG_URL = "https://image.tmdb.org/t/p/w1280";
 
-        String url = BrowserAdapter.IMAGE_URL + imageUrl;
+    private static final String TAG = "DetailActivity";
+
+
+    @BindingAdapter({"imageUrl", "collapsingToolbar", "context"})
+    public static void loadImageFromUrl(ImageView imageView, String imageUrl, CollapsingToolbarLayout collapsingToolbarLayout, Context context) {
+
+        String url = LARGE_IMG_URL + imageUrl;
+
+        Log.d(TAG, "loadImageFromUrl: " + imageUrl);
 
         Glide.with(imageView)
             .load(url)
             .listener(GlidePalette.with(url)
-                .use(GlidePalette.Profile.VIBRANT_LIGHT).intoBackground(mainView)
+                .intoCallBack(palette -> {
+                    int scrimColor = palette.getVibrantColor(GlidePalette.Swatch.RGB) == 0 ? ContextCompat.getColor(imageView.getContext(), R.color
+                        .colorPrimary) : palette.getVibrantColor(GlidePalette.Swatch.RGB);
+                    collapsingToolbarLayout.setContentScrimColor(scrimColor);
+                    collapsingToolbarLayout.setStatusBarScrimColor(scrimColor);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        ((Activity) context).getWindow().setStatusBarColor(scrimColor);
+                    }
+                })
             )
-            .into(imageView);
-    }
-
-    @BindingAdapter({"app:imageUrl"})
-    public static void loadImageFromUrl(ImageView imageView, String imageUrl) {
-
-        String url = BrowserAdapter.IMAGE_URL + imageUrl;
-
-        Glide.with(imageView)
-            .load(url)
             .into(imageView);
     }
 
@@ -70,6 +81,8 @@ public class DetailActivity extends AppCompatActivity implements DetailVideoAdap
     private DetailViewModel viewModel;
     private DetailVideoAdapter videoAdapter;
     private boolean isFavorite;
+    private boolean appbarCollapsed;
+    private MovieModel movie;
 
     @Inject
     ViewModelProvider.Factory viewModelProviderFactory;
@@ -87,6 +100,21 @@ public class DetailActivity extends AppCompatActivity implements DetailVideoAdap
 
         binding.videosList.setAdapter(videoAdapter);
 
+        /*
+            Based on stackoverflow answer:
+                    https://stackoverflow.com/questions/31872653/how-can-i-determine-that-collapsingtoolbar-is-collapsed
+        */
+        binding.appbar.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
+            boolean old = appbarCollapsed;
+            appbarCollapsed = Math.abs(verticalOffset) == binding.appbar.getTotalScrollRange();
+            if (old != appbarCollapsed) {
+                changeToolbar();
+
+            }
+        });
+
+        binding.favoriteFAB.setOnClickListener(v -> viewModel.changeFavorite());
+
         viewModel = ViewModelProviders.of(this, viewModelProviderFactory).get(DetailViewModel.class);
 
         viewModel.getVideos().observe(this, this::handleVideoResult);
@@ -95,10 +123,12 @@ public class DetailActivity extends AppCompatActivity implements DetailVideoAdap
 
         viewModel.getFavoriteStatus().observe(this, this::handleFavorite);
 
+        viewModel.getDetail().observe(this, this::handleDetails);
+
 
         Intent intent = getIntent();
 
-        MovieModel movie = intent.getParcelableExtra(BrowseActivity.EXTRA_MOVIE);
+        movie = intent.getParcelableExtra(BrowseActivity.EXTRA_MOVIE);
 
         setSupportActionBar(binding.toolbar);
 
@@ -114,6 +144,21 @@ public class DetailActivity extends AppCompatActivity implements DetailVideoAdap
         }
     }
 
+    private void handleDetails(Result<MovieDetailModel> movieDetailModelResult) {
+        if (movieDetailModelResult.data.size() > 0) {
+            binding.setDetail(movieDetailModelResult.data.get(0));
+        }
+    }
+
+    private void changeToolbar() {
+        invalidateOptionsMenu();
+        if (appbarCollapsed) {
+            binding.collapsingToolbar.setTitle(movie.getTitle());
+        } else {
+            binding.collapsingToolbar.setTitle(" ");
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_details, menu);
@@ -123,9 +168,17 @@ public class DetailActivity extends AppCompatActivity implements DetailVideoAdap
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 
-        MenuItem favorite = menu.findItem(R.id.menu_favorite);
 
-        favorite.setIcon(isFavorite ? R.drawable.ic_star_24dp : R.drawable.ic_star_border_24dp);
+        if (appbarCollapsed) {
+            MenuItem favorite = menu.findItem(R.id.menu_favorite);
+            if (favorite == null) {
+                favorite = menu.add(Menu.NONE, R.id.menu_favorite, 0, R.string.favorite_menu);
+            }
+
+            favorite.setIcon(isFavorite ? R.drawable.ic_star_24dp : R.drawable.ic_star_border_24dp);
+        } else {
+            menu.removeItem(R.id.menu_favorite);
+        }
 
         return true;
     }
@@ -212,6 +265,7 @@ public class DetailActivity extends AppCompatActivity implements DetailVideoAdap
 
     private void handleFavorite(boolean isFavorite) {
         this.isFavorite = isFavorite;
+        binding.favoriteFAB.setImageResource(isFavorite ? R.drawable.ic_star_24dp : R.drawable.ic_star_border_24dp);
         invalidateOptionsMenu();
     }
 

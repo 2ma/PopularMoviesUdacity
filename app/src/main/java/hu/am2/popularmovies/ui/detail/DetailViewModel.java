@@ -6,14 +6,17 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import hu.am2.popularmovies.data.repository.local.LocalRepository;
 import hu.am2.popularmovies.data.repository.remote.RemoteRepository;
-import hu.am2.popularmovies.data.repository.remote.module.DetailResponse;
-import hu.am2.popularmovies.data.repository.remote.module.MovieModel;
-import hu.am2.popularmovies.data.repository.remote.module.ReviewModel;
-import hu.am2.popularmovies.data.repository.remote.module.VideoModel;
+import hu.am2.popularmovies.data.repository.remote.model.MovieDetailModel;
+import hu.am2.popularmovies.data.repository.remote.model.MovieModel;
+import hu.am2.popularmovies.data.repository.remote.model.ReviewModel;
+import hu.am2.popularmovies.data.repository.remote.model.VideoModel;
 import hu.am2.popularmovies.domain.Result;
 import io.reactivex.Completable;
 import io.reactivex.Single;
@@ -28,6 +31,7 @@ public class DetailViewModel extends ViewModel {
 
     private final MutableLiveData<Result<VideoModel>> videos = new MutableLiveData<>();
     private final MutableLiveData<Result<ReviewModel>> reviews = new MutableLiveData<>();
+    private final MutableLiveData<Result<MovieDetailModel>> detail = new MutableLiveData<>();
 
     private final MutableLiveData<Boolean> favorite = new MutableLiveData<>();
 
@@ -53,25 +57,37 @@ public class DetailViewModel extends ViewModel {
             disposables.clear();
             this.movie = movie;
             final int id = movie.getId();
+            loadDetail(id);
             loadVideos(id);
             loadReviews(id);
             checkFavorite(id);
         }
     }
 
+    private void loadDetail(int movieId) {
+        disposables.add(remoteRepository.getDetailForMovieId(movieId)
+            .subscribeOn(Schedulers.io())
+            .subscribe(movieDetailModel -> {
+                List<MovieDetailModel> data = new ArrayList<>();
+                if (movieDetailModel != null) {
+                    data.add(movieDetailModel);
+                }
+                postDetailtResult(Result.success(data, -1));
+            }, throwable -> postDetailtResult(Result.error(-1, throwable.getMessage())))
+        );
+    }
+
     private void loadReviews(int movieId) {
         postReviewResult(Result.loading(-1));
         disposables.add(remoteRepository.getReviewsForMovieId(movieId).subscribeOn(Schedulers.io())
-            .map(DetailResponse::getData)
-            .subscribe(reviewModels -> postReviewResult(Result.success(reviewModels, -1)),
+            .subscribe(reviewModelsResponse -> postReviewResult(Result.success(reviewModelsResponse.getData(), -1)),
                 throwable -> postReviewResult(Result.error(-1, throwable.getMessage()))));
     }
 
     private void loadVideos(int movieId) {
         postVideoResult(Result.loading(-1));
         disposables.add(remoteRepository.getVideosForMovieId(movieId).subscribeOn(Schedulers.io())
-            .map(DetailResponse::getData)
-            .subscribe(videoModules -> postVideoResult(Result.success(videoModules, -1)),
+            .subscribe(videoModulesResponse -> postVideoResult(Result.success(videoModulesResponse.getData(), -1)),
                 throwable -> postVideoResult(Result.error(-1, throwable.getMessage()))));
     }
 
@@ -105,12 +121,20 @@ public class DetailViewModel extends ViewModel {
         reviews.postValue(result);
     }
 
+    private void postDetailtResult(Result<MovieDetailModel> result) {
+        detail.postValue(result);
+    }
+
     LiveData<Result<VideoModel>> getVideos() {
         return videos;
     }
 
     LiveData<Result<ReviewModel>> getReviews() {
         return reviews;
+    }
+
+    LiveData<Result<MovieDetailModel>> getDetail() {
+        return detail;
     }
 
     LiveData<Boolean> getFavoriteStatus() {

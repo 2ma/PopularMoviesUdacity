@@ -1,60 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout>
+
+    <android.support.design.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools">
-
-    <android.support.constraint.ConstraintLayout
-
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="hu.am2.popularmovies.ui.browser.BrowseActivity">
+        android:layout_height="match_parent">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:titleTextColor="@android:color/white"
-            />
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:minHeight="64dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/movieListView"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
-            />
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                android:theme="?attr/actionBarTheme"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:titleTextColor="@android:color/white"
+                />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/movieListView"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/progressBar"/>
+        </android.support.design.widget.AppBarLayout>
 
-        <TextView
-            android:id="@+id/emptyView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/progressBar"
-            android:text="@string/no_movies"
-            android:visibility="gone"
-            />
-    </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context="hu.am2.popularmovies.ui.browser.BrowseActivity"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            >
+
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:minHeight="64dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@+id/movieListView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/movieListView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/progressBar"
+                />
+
+            <TextView
+                android:id="@+id/emptyView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no_movies"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/progressBar"
+                />
+        </android.support.constraint.ConstraintLayout>
+    </android.support.design.widget.CoordinatorLayout>
+
 </layout>
 
