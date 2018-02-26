@@ -15,7 +15,7 @@ android {
     }
     buildTypes {
         applicationVariants.all {
-            it.resValue("string", "api_key", TMDBApiKey)
+            it.resValue("string", "api_key", "\""+getApiKey()+"\"")
         }
         release {
             minifyEnabled false
@@ -87,4 +87,10 @@ dependencies {
     testImplementation "junit:junit:$rootProject.ext.junitVersion"
     androidTestImplementation "com.android.support.test:runner:$rootProject.ext.runnerVersion"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$rootProject.ext.espressoVersion"
+}
+/*baes off: https://gist.github.com/curioustechizen/9f7d745f9f5f51355bd6*/
+static def getApiKey(){
+    Properties props = new Properties()
+    props.load(new FileInputStream(new File('api.properties')))
+    return props['TMDBApiKey']
 }
