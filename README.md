@@ -5,9 +5,13 @@ This is a student app for the Udacity Google Developer Nanodegree Scholarship An
 
 This app uses www.themoviedb.org as source of it's content, you need to get an API key, and add to api.properties like this: TMDBApiKey=your_key_here
 
-![Home screen](screenshots/device-2018-03-01-192313_small.png?raw=true "Home screen")
-![Detail screen](screenshots/device-2018-03-01-192345_small.png?raw=true "Detail screen")
-![Detail screen](screenshots/device-2018-03-01-192404_small.png?raw=true "Detail screen")
+# Phone screenshots
+
+<p align="left">
+<img src="https://github.com/2ma/PopularMoviesUdacity/blob/master/screenshots/device-2018-03-01-192313_small.png" height="500"/>
+<img src="https://github.com/2ma/PopularMoviesUdacity/blob/master/screenshots/device-2018-03-01-192345_small.png" height="500"/>
+<img src="https://github.com/2ma/PopularMoviesUdacity/blob/master/screenshots/device-2018-03-01-192404_small.png" height="500"/>
+</p>
 
 Copyright (c) 2018 Tamás Müller
 
